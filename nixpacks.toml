@@ -1,10 +1,6 @@
 # Add Node.js provider alongside the auto-detected Java provider
 providers = ["...", "node"]
 
-# Install Node.js packages during setup
-[phases.setup]
-nixPkgs = ["nodejs-18_x", "nodePackages.npm"]
-
 # Custom build command to use Maven
 [phases.build]
 cmds = ["mvn clean package -DskipTests -e -X"]
