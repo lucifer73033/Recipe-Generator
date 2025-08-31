@@ -3,6 +3,9 @@ HELP.md
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Maven build output
+target/
+
 ### STS ###
 .apt_generated
 .classpath
