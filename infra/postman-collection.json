@@ -1,0 +1,343 @@
+{
+  "info": {
+    "name": "Smart Recipe Generator API",
+    "description": "API collection for testing the Smart Recipe Generator endpoints",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "recipeId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Recipe Generation",
+      "item": [
+        {
+          "name": "Generate Recipes from Ingredients",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ingredients\": [\"chicken\", \"tomato\", \"onion\", \"garlic\"],\n  \"dietTags\": [\"gluten-free\"],\n  \"maxTimeMinutes\": 45,\n  \"difficulty\": \"EASY\",\n  \"cuisine\": \"Italian\",\n  \"servings\": 4\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/recipes/generate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recipes", "generate"]
+            }
+          }
+        },
+        {
+          "name": "Recognize Ingredients from Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "path/to/your/image.jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ingredients/recognize",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ingredients", "recognize"]
+            }
+          }
+        },
+        {
+          "name": "Get Supported Image Formats",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/ingredients/supported-formats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ingredients", "supported-formats"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recipe Management",
+      "item": [
+        {
+          "name": "Search Recipes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/recipes?query=pasta&diet=vegetarian&timeMax=30&difficulty=EASY&page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recipes"],
+              "query": [
+                {"key": "query", "value": "pasta"},
+                {"key": "diet", "value": "vegetarian"},
+                {"key": "timeMax", "value": "30"},
+                {"key": "difficulty", "value": "EASY"},
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Recipe by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/recipes/{{recipeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recipes", "{{recipeId}}"]
+            }
+          }
+        },
+        {
+          "name": "Rate Recipe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stars\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/recipes/{{recipeId}}/rate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recipes", "{{recipeId}}", "rate"]
+            }
+          }
+        },
+        {
+          "name": "Save Recipe to Favorites",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/recipes/{{recipeId}}/save",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recipes", "{{recipeId}}", "save"]
+            }
+          }
+        },
+        {
+          "name": "Remove Recipe from Favorites",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/recipes/{{recipeId}}/save",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recipes", "{{recipeId}}", "save"]
+            }
+          }
+        },
+        {
+          "name": "Get Recipe Rating Info",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/recipes/{{recipeId}}/rating",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recipes", "{{recipeId}}", "rating"]
+            }
+          }
+        },
+        {
+          "name": "Get Recipe Favorite Info",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/recipes/{{recipeId}}/favorite",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recipes", "{{recipeId}}", "favorite"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Profile",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/me/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "me", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Get Saved Recipes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/me/saved",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "me", "saved"]
+            }
+          }
+        },
+        {
+          "name": "Get User Ratings",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/me/ratings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "me", "ratings"]
+            }
+          }
+        },
+        {
+          "name": "Get User Statistics",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/me/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "me", "stats"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Logs & Monitoring",
+      "item": [
+        {
+          "name": "Get Recent Logs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/logs/recent?limit=50",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "logs", "recent"],
+              "query": [
+                {"key": "limit", "value": "50"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Logs by Event Type",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/logs/events/recipe_generation",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "logs", "events", "recipe_generation"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Functions",
+      "item": [
+        {
+          "name": "Seed Database",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/seed",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "seed"]
+            }
+          }
+        },
+        {
+          "name": "Get Admin Logs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/logs?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "logs"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "20"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get System Statistics",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "stats"]
+            }
+          }
+        },
+        {
+          "name": "Cleanup Old Logs",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/logs/cleanup",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "logs", "cleanup"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health & Documentation",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/actuator/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["actuator", "health"]
+            }
+          }
+        },
+        {
+          "name": "API Documentation",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api-docs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api-docs"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+
+
+

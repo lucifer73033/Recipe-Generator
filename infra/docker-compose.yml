@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: recipe-generator-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: recipe_generator
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - recipe-network
+
+  # Uncomment for local Redis (if implementing distributed sessions)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: recipe-generator-redis
+  #   restart: unless-stopped
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+  #   networks:
+  #     - recipe-network
+
+volumes:
+  mongodb_data:
+  # redis_data:
+
+networks:
+  recipe-network:
+    driver: bridge
+
+
+
