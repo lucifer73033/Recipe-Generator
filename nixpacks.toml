@@ -3,7 +3,7 @@ providers = ["...", "node"]
 
 # Install Node.js packages during setup
 [phases.setup]
-nixPkgs = ["nodejs", "npm"]
+nixPkgs = ["nodejs-18_x", "nodePackages.npm"]
 
 # Custom build command to use Maven
 [phases.build]
