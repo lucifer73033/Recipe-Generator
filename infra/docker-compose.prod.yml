@@ -6,7 +6,7 @@ services:
     build:
       context: ..
       dockerfile: Dockerfile
-    container_name: recipe-generator-app
+    container_name: recipe-generator-app-prod
     restart: unless-stopped
     ports:
       - "8080:8080"
@@ -18,9 +18,11 @@ services:
       - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
       - OPENROUTER_MODEL=${OPENROUTER_MODEL:-google/gemini-2.5-flash}
       # Application Configuration
-      - LOG_LEVEL=${LOG_LEVEL:-INFO}
-      - SEED_ON_START=${SEED_ON_START:-true}
-      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-dev}
+      - LOG_LEVEL=${LOG_LEVEL:-WARN}
+      - SEED_ON_START=${SEED_ON_START:-false}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-prod}
+      # Security
+      - SERVER_FORWARD_HEADERS_STRATEGY=framework
     depends_on:
       mongodb:
         condition: service_healthy
@@ -32,11 +34,19 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
 
   # MongoDB Database
   mongodb:
     image: mongo:7
-    container_name: recipe-generator-mongodb
+    container_name: recipe-generator-mongodb-prod
     restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
@@ -55,30 +65,71 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+        reservations:
+          memory: 512M
+          cpus: '0.25'
 
-  # Nginx Reverse Proxy (Optional - for production-like setup)
+  # Nginx Reverse Proxy
   nginx:
     image: nginx:alpine
-    container_name: recipe-generator-nginx
+    container_name: recipe-generator-nginx-prod
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
     depends_on:
       - recipe-generator-app
     networks:
       - recipe-network
-    profiles:
-      - production
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+        reservations:
+          memory: 128M
+          cpus: '0.1'
+
+  # Redis for session management (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: recipe-generator-redis-prod
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-your_redis_password_here}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - recipe-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+        reservations:
+          memory: 128M
+          cpus: '0.1'
 
 volumes:
   mongodb_data:
+    driver: local
+  redis_data:
+    driver: local
 
 networks:
   recipe-network:
     driver: bridge
-
-
-
